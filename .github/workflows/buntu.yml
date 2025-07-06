@@ -19,5 +19,8 @@ jobs:
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
 
+      - name: Keep session alive
+        run: sleep 6h
+
       - name: Run VPS
         run: curl -sSf https://sshx.io/get | sh -s run
