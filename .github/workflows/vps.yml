@@ -1,0 +1,28 @@
+name: VPS SSH (Tmate)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-vps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update dan install tmate
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tmate openssh-client
+
+      - name: Inject your Termux public key
+        run: |
+          mkdir -p ~/.ssh
+          echo "ssh-ed25519 AAAAC3NzaC11ZDI1NTE5AAAAIPoFsEFeWdFGT7anTENCo7GB381ZWnXdrChSIb5y rudolvo" >> ~/.ssh/authorized_keys
+
+      - name: Start tmate session
+        run: |
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+          echo "🔗 Web shell: $(tmate -S /tmp/tmate.sock display -p '#{tmate_web}')"
+          echo "🧷 SSH: $(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}')"
+
+      - name: Keep session alive (6 jam)
+        run: sleep 21600
